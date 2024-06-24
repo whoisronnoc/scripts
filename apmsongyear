@@ -1,0 +1,20 @@
+#!/bin/bash
+# apmsongyear /path/to/stamp-.csv ./tmp.csv 
+# apmsongyear /path/to/Library.plist
+# LIBRARY_PLIST=$1
+STAMP_CSV=$1
+TEMP_FILE=$2
+
+
+rm $TEMP_FILE
+
+while IFS=, read -r col1 col2
+do
+		echo "$col1|$col2"
+		res=$(plutil -extract Tracks.$col1.Year xml1 -o - $2 | sed -n "s/.*<integer>\(.*\)<\/integer>.*/\1/p")
+		echo "$res"
+		echo "$col1,$col2,$res" >> $TEMP_FILE
+done < $STAMP_CSV
+
+# plutil -extract Tracks.4851.Year xml1 -o - $LIBRARY_PLIST | sed -n "s/.*<integer>\(.*\)<\/integer>.*/\1/p"
+
